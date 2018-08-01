@@ -4,6 +4,7 @@ const db = require('./db/mysql.js');
 const express = require('express');
 // 引入处理post数据的依赖
 const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
 // 解析应用程序/json
 app.use(bodyParser.json());
@@ -13,14 +14,15 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('./dist'));
 
 // 获取错误日志
-app.post('/getError', (req, res) => {
+app.post('/api/getError', (req, res) => {
 	db.getList()
 		.then(data => res.send(data))
 		.catch(err => res.send(err));
 });
 
 // 保存错误日志
-app.post('/saveError', (req, res) => {
+app.post('/api/saveError', (req, res) => {
+	delete req.body.jttechSign;
 	db.addInfos(req.body)
 		.then(data => res.send('saveError success'))
 		.catch(err => res.send(err));

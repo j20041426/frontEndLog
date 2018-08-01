@@ -8,7 +8,7 @@
     	.left {
     		width: 350px;
     		min-width: 350px;
-    		height: 100vh;
+    		max-height: 100vh;
     		overflow: auto;
     		&::-webkit-scrollbar {
     			/*滚动条整体样式*/
@@ -56,7 +56,7 @@
     	}
     	.center,
     	.right {
-    		padding: 0 30px 30px;
+    		padding: 0 30px;
     		font-size: 14px;
     		h4 {
     			margin-bottom: 10px;
@@ -152,18 +152,17 @@
                     <span>文件</span>
                     <span>{{currErr.filename||'-'}}</span>
                 </li>
-                <!-- <li>
-                    <span>行列</span>
-                    <template v-if="currErr.lineno">
-                        <span>{{currErr.lineno}}:{{currErr.colno}}</span>
-                    </template>
-                    <span v-else>-</span>
-                </li> -->
                 <li>
                     <span>信息</span>
                     <span>{{currErr.message}}</span>
                 </li>
             </ul>
+            <h4>Cookies</h4>
+            <pre>{{currErr.cookies}}</pre>
+            <h4>LocalStorage</h4>
+            <pre>{{currErr.localStorage}}</pre>
+            <h4>SessionStorage</h4>
+            <pre>{{currErr.sessionStorage}}</pre>
         </div>
         <div class="right">
             <h4>设备信息</h4>
@@ -185,30 +184,12 @@
                     <span>{{currErr.device}}</span>
                 </li>
             </ul>
-            <h4>Cookies</h4>
+            <!-- <h4>Cookies</h4>
             <pre>{{currErr.cookies}}</pre>
             <h4>LocalStorage</h4>
             <pre>{{currErr.localStorage}}</pre>
             <h4>SessionStorage</h4>
-            <pre>{{currErr.sessionStorage}}</pre>
-            <!-- <ul>
-                <li>
-                    <span>Cookies</span>
-                    <span>{{currErr.cookies}}</span>
-                </li>
-                <li>
-                    <span>localStorage</span>
-                    <span>
-                        <pre>{{currErr.localStorage}}</pre>
-                    </span>
-                </li>
-                <li>
-                    <span>sessionStorage</span>
-                    <span>
-                        <pre>{{currErr.sessionStorage}}</pre>
-                    </span>
-                </li>
-            </ul> -->
+            <pre>{{currErr.sessionStorage}}</pre> -->
         </div>
     </div>
 </template>
@@ -232,7 +213,6 @@
     				this.currErr.sessionStorage = JSON.parse(
     					data[0].sessionStorage
     				);
-    				// setTimeout(() => this.getError(), 1000);
     			});
     		},
     		clickError(err) {

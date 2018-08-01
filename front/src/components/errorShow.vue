@@ -115,13 +115,13 @@
 <template>
     <div class="all" v-if="errorList.length">
         <ul class="left">
-            <li v-for="err in errorList" :key="err._id" :class="{currLi:err._id===currErr._id}" @click="clickError(err)">
+            <li v-for="err in errorList" :key="err.logId" :class="{currLi:err.logId===currErr.logId}" @click="clickError(err)">
                 <div class="liLeft">
-                    <div>{{err.error.message.split(': ')[0]}}</div>
-                    <div class="msg" :title="err.error.message.split(': ')[1]">{{err.error.message.split(': ')[1]}}</div>
+                    <div v-if="err.message">{{err.message.split(': ')[0]}}</div>
+                    <div v-if="err.message" class="msg" :title="err.message.split(': ')[1]">{{err.message.split(': ')[1]}}</div>
                 </div>
                 <div class="liRight">
-                    <!-- <div>{{err.general.time}}</div> -->
+                    <!-- <div>{{err.time}}</div> -->
                     <div>14:43</div>
                 </div>
             </li>
@@ -131,15 +131,15 @@
             <ul>
                 <li>
                     <span>时间</span>
-                    <span>{{currErr.general.time}}</span>
+                    <span>{{currErr.createDate}}</span>
                 </li>
                 <li>
                     <span>项目</span>
-                    <span>{{currErr.general.proName}}</span>
+                    <span>{{currErr.projectName}}</span>
                 </li>
                 <li>
                     <span>地址</span>
-                    <span>{{currErr.general.proUrl}}</span>
+                    <span>{{currErr.projectUrl}}</span>
                 </li>
             </ul>
             <div v-if="currErr.stack">
@@ -150,18 +150,18 @@
             <ul>
                 <li>
                     <span>文件</span>
-                    <span>{{currErr.error.filename||'-'}}</span>
+                    <span>{{currErr.filename||'-'}}</span>
                 </li>
-                <li>
+                <!-- <li>
                     <span>行列</span>
-                    <template v-if="currErr.error.lineno">
-                        <span>{{currErr.error.lineno}}:{{currErr.error.colno}}</span>
+                    <template v-if="currErr.lineno">
+                        <span>{{currErr.lineno}}:{{currErr.colno}}</span>
                     </template>
                     <span v-else>-</span>
-                </li>
+                </li> -->
                 <li>
                     <span>信息</span>
-                    <span>{{currErr.error.message}}</span>
+                    <span>{{currErr.message}}</span>
                 </li>
             </ul>
         </div>
@@ -170,32 +170,45 @@
             <ul>
                 <li>
                     <span>浏览器</span>
-                    <span>{{currErr.device.browser}}</span>
+                    <span>{{currErr.browser}}</span>
                 </li>
                 <li>
                     <span>浏览器版本</span>
-                    <span>{{currErr.device.browserV}}</span>
+                    <span>{{currErr.browserVersion}}</span>
                 </li>
                 <li>
                     <span>操作系统</span>
-                    <span>{{currErr.device.system}}</span>
+                    <span>{{currErr.system}}</span>
                 </li>
                 <li>
                     <span>设备</span>
-                    <span>{{currErr.device.device}}</span>
+                    <span>{{currErr.device}}</span>
                 </li>
             </ul>
-            <h4>位置信息</h4>
-            <ul>
+            <h4>Cookies</h4>
+            <pre>{{currErr.cookies}}</pre>
+            <h4>LocalStorage</h4>
+            <pre>{{currErr.localStorage}}</pre>
+            <h4>SessionStorage</h4>
+            <pre>{{currErr.sessionStorage}}</pre>
+            <!-- <ul>
                 <li>
-                    <span>IP</span>
-                    <span>{{currErr.location.ip||'-'}}</span>
+                    <span>Cookies</span>
+                    <span>{{currErr.cookies}}</span>
                 </li>
                 <li>
-                    <span>地点</span>
-                    <span>{{currErr.location.address||'-'}}</span>
+                    <span>localStorage</span>
+                    <span>
+                        <pre>{{currErr.localStorage}}</pre>
+                    </span>
                 </li>
-            </ul>
+                <li>
+                    <span>sessionStorage</span>
+                    <span>
+                        <pre>{{currErr.sessionStorage}}</pre>
+                    </span>
+                </li>
+            </ul> -->
         </div>
     </div>
 </template>
@@ -214,11 +227,19 @@
     			this.$http.post('/api/getError').then(({data}) => {
     				this.errorList = data;
     				this.currErr = data[0];
+    				this.currErr.cookies = JSON.parse(data[0].cookies);
+    				this.currErr.localStorage = JSON.parse(data[0].localStorage);
+    				this.currErr.sessionStorage = JSON.parse(
+    					data[0].sessionStorage
+    				);
     				// setTimeout(() => this.getError(), 1000);
     			});
     		},
     		clickError(err) {
     			this.currErr = err;
+    			this.currErr.cookies = JSON.parse(err.cookies);
+    			this.currErr.localStorage = JSON.parse(err.localStorage);
+    			this.currErr.sessionStorage = JSON.parse(err.sessionStorage);
     		}
     	},
     	created() {

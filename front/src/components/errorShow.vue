@@ -1,114 +1,114 @@
 <style lang="less" scoped>
     li {
-    	list-style: none;
+        list-style: none;
     }
     .all {
-    	display: flex;
+        display: flex;
 
-    	.left {
-    		width: 350px;
-    		min-width: 350px;
-    		max-height: 100vh;
-    		overflow: auto;
-    		&::-webkit-scrollbar {
-    			/*滚动条整体样式*/
-    			width: 10px; /*高宽分别对应横竖滚动条的尺寸*/
-    		}
-    		&::-webkit-scrollbar-thumb {
-    			/*滚动条里面小方块*/
-    			border-radius: 20px;
-    			background: #00a680;
-    			// background: #00a680;
-    		}
-    		li {
-    			display: flex;
-    			justify-content: space-between;
-    			align-items: center;
-    			padding: 15px 20px;
-    			border-bottom: 1px solid #f8f8f8;
-    			cursor: pointer;
-    			&:hover {
-    				background-color: #f8f8f8;
-    			}
-    			.liLeft {
-    				width: 80%;
-    				font-size: 14px;
-    				div {
-    					overflow: hidden;
-    					text-overflow: ellipsis;
-    					white-space: nowrap;
-    					color: #6c6c72;
-    					&:first-child {
-    						margin-bottom: 10px;
-    						color: #333;
-    					}
-    				}
-    			}
-    			.liRight {
-    				font-size: 12px;
-    				color: #9d9da1;
-    			}
-    		}
-    		.currLi {
-    			box-shadow: inset 10px 0 0 #00a680;
-    			background-color: #f8f8f8;
-    		}
-    	}
-    	.center,
-    	.right {
-    		padding: 0 30px;
-    		font-size: 14px;
-    		h4 {
-    			margin-bottom: 10px;
-    			margin-top: 30px;
-    			font-size: 16px;
-    			font-weight: normal;
-    		}
-    		ul {
-    			li {
-    				height: 40px;
-    				line-height: 40px;
-    				border-bottom: 1px solid #f2f3f3;
-    				span {
-    					color: #4a4a4a;
-    					&:first-child {
-    						display: inline-block;
-    						width: 110px;
-    						color: #9d9da1;
-    					}
-    				}
-    			}
-    		}
-    	}
-    	.center {
-    		position: relative;
-    		flex: 1;
-    		&::after,
-    		&::before {
-    			content: '';
-    			position: absolute;
-    			top: 0;
-    			left: 0;
-    			width: 1px;
-    			height: 100vh;
-    			background-color: #f2f3f3;
-    		}
-    		&::after {
-    			left: 100%;
-    		}
-    		pre {
-    			padding: 15px;
-    			// font-family: inherit;
-    			font-size: 16px;
-    			color: #f00;
-    			border: 1px solid #f2f3f3;
-    			white-space: pre-wrap;
-    		}
-    	}
-    	.right {
-    		width: 290px;
-    		min-width: 290px;
-    	}
+        .left {
+            width: 350px;
+            min-width: 350px;
+            max-height: 100vh;
+            overflow: auto;
+            &::-webkit-scrollbar {
+                /*滚动条整体样式*/
+                width: 10px; /*高宽分别对应横竖滚动条的尺寸*/
+            }
+            &::-webkit-scrollbar-thumb {
+                /*滚动条里面小方块*/
+                border-radius: 20px;
+                background: #00a680;
+                // background: #00a680;
+            }
+            li {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 20px;
+                border-bottom: 1px solid #f8f8f8;
+                cursor: pointer;
+                &:hover {
+                    background-color: #f8f8f8;
+                }
+                .liLeft {
+                    width: 80%;
+                    font-size: 14px;
+                    div {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        color: #6c6c72;
+                        &:first-child {
+                            margin-bottom: 10px;
+                            color: #333;
+                        }
+                    }
+                }
+                .liRight {
+                    font-size: 12px;
+                    color: #9d9da1;
+                }
+            }
+            .currLi {
+                box-shadow: inset 10px 0 0 #00a680;
+                background-color: #f8f8f8;
+            }
+        }
+        .center,
+        .right {
+            padding: 0 30px;
+            font-size: 14px;
+            h4 {
+                margin-bottom: 10px;
+                margin-top: 30px;
+                font-size: 16px;
+                font-weight: normal;
+            }
+            ul {
+                li {
+                    height: 40px;
+                    line-height: 40px;
+                    border-bottom: 1px solid #f2f3f3;
+                    span {
+                        color: #4a4a4a;
+                        &:first-child {
+                            display: inline-block;
+                            width: 110px;
+                            color: #9d9da1;
+                        }
+                    }
+                }
+            }
+        }
+        .center {
+            position: relative;
+            flex: 1;
+            &::after,
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 1px;
+                height: 100vh;
+                background-color: #f2f3f3;
+            }
+            &::after {
+                left: 100%;
+            }
+            pre {
+                padding: 15px;
+                // font-family: inherit;
+                font-size: 16px;
+                color: #f00;
+                border: 1px solid #f2f3f3;
+                white-space: pre-wrap;
+            }
+        }
+        .right {
+            width: 290px;
+            min-width: 290px;
+        }
     }
 </style>
 
@@ -184,46 +184,45 @@
                     <span>{{currErr.device}}</span>
                 </li>
             </ul>
-            <!-- <h4>Cookies</h4>
-            <pre>{{currErr.cookies}}</pre>
-            <h4>LocalStorage</h4>
-            <pre>{{currErr.localStorage}}</pre>
-            <h4>SessionStorage</h4>
-            <pre>{{currErr.sessionStorage}}</pre> -->
         </div>
     </div>
 </template>
 
 <script>
     export default {
-    	name: 'errorShow',
-    	data() {
-    		return {
-    			errorList: [],
-    			currErr: {}
-    		};
-    	},
-    	methods: {
-    		getError() {
-    			this.$http.post('/frontLogApi/getError').then(({data}) => {
-    				this.errorList = data;
-    				this.currErr = data[0];
-    				this.currErr.cookies = JSON.parse(data[0].cookies);
-    				this.currErr.localStorage = JSON.parse(data[0].localStorage);
-    				this.currErr.sessionStorage = JSON.parse(
-    					data[0].sessionStorage
-    				);
-    			});
-    		},
-    		clickError(err) {
-    			this.currErr = err;
-    			this.currErr.cookies = JSON.parse(err.cookies);
-    			this.currErr.localStorage = JSON.parse(err.localStorage);
-    			this.currErr.sessionStorage = JSON.parse(err.sessionStorage);
-    		}
-    	},
-    	created() {
-    		this.getError();
-    	}
+        name: 'errorShow',
+        data() {
+            return {
+                errorList: [],
+                currErr: {}
+            };
+        },
+        methods: {
+            getError() {
+                this.$http.post('/frontLogApi/getError').then(({data}) => {
+                    if (data.length) {
+                        this.errorList = data;
+                        this.currErr = data[0];
+                        this.currErr.cookies = JSON.parse(data[0].cookies);
+                        this.currErr.localStorage = JSON.parse(
+                            data[0].localStorage
+                        );
+                        this.currErr.sessionStorage = JSON.parse(
+                            data[0].sessionStorage
+                        );
+                    }
+                });
+            },
+            clickError(err) {
+                this.currErr = err;
+                if (err.localStorage !== '{}')
+                    this.currErr.localStorage = JSON.parse(err.localStorage);
+                if (err.sessionStorage !== '{}')
+                    this.currErr.sessionStorage = JSON.parse(err.sessionStorage);
+            }
+        },
+        created() {
+            this.getError();
+        }
     };
 </script>

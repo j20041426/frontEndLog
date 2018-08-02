@@ -205,7 +205,7 @@
     	},
     	methods: {
     		getError() {
-    			this.$http.post('/api/getError').then(({data}) => {
+    			this.$http.post('/frontLogApi/getError').then(({data}) => {
     				this.errorList = data;
     				this.currErr = data[0];
     				this.currErr.cookies = JSON.parse(data[0].cookies);

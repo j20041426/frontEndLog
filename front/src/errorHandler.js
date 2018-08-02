@@ -47,7 +47,7 @@ const errorHandler = (e, t) => {
 
   // 发送请求
   Vue.axios
-    .post('/api/saveError', basicInfo)
+    .post('/frontLogApi/saveError', basicInfo)
     .then(({data}) => console.log(data));
 };
 
@@ -66,7 +66,7 @@ const _AgentInfo = {
   browserName: '', //  chrome, safari, firefox, IE and so on...
   browserVer: '', //  browser version， important if in IE environment.
   adaptType: 0, // A type value, Adapt to the screen due to width
-  _init: function() {
+  _init() {
     _AgentInfo.setDeviceAndOS();
     _AgentInfo.setBrowser();
     return {
@@ -76,7 +76,7 @@ const _AgentInfo = {
       device: _AgentInfo.deviceType
     };
   },
-  setDeviceAndOS: function() {
+  setDeviceAndOS() {
     var name = 'unknown';
     if (window.navigator.userAgent.indexOf('Android') != -1) {
       name = 'Android';
@@ -118,7 +118,7 @@ const _AgentInfo = {
     _AgentInfo.OSname = name;
     _AgentInfo.deviceType = 'pc';
   },
-  setBrowser: function() {
+  setBrowser() {
     var nAgt = navigator.userAgent;
     var browserName = navigator.appName;
     var fullVersion = '' + parseFloat(navigator.appVersion);
@@ -179,7 +179,7 @@ const _AgentInfo = {
     _AgentInfo.browserName = browserName;
     _AgentInfo.browserVer = fullVersion;
   },
-  isMobile: function() {
+  isMobile() {
     if (_AgentInfo.deviceType == 'mobile') {
       return true;
     }
@@ -263,6 +263,7 @@ function formatDate(date, fmt) {
 const install = Vue => {
   if (install.installed) return;
   install.installed = true;
+  Vue.config.errorHandler = errorHandler;
   Object.defineProperties(Vue.prototype, {
     errorHandler: {
       get() {

@@ -11,9 +11,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('./dist'));
 
-app.get('*', (req, res) => {
-    res.send('你找到我了');
-});
+// app.get('*', (req, res) => {
+//     res.send('你找到我了');
+// });
 // 获取错误日志
 app.post('/frontLogApi/getError', (req, res) => {
     db.getList()

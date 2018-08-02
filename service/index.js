@@ -4,5 +4,4 @@
  * Creeated by hzq on 2018/7/2
  */
 const app = require('./api');
-//监听端口为5000
-app.listen(5000, () => console.log('**********【服务器启动成功】**********'));
+app.listen(8999, () => console.log('**********【服务器启动成功】**********'));

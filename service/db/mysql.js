@@ -33,7 +33,12 @@ let connection = function(sql, values) {
 
 // 查询列表数据
 let getList = function(value) {
-    let _sql = 'SELECT * FROM runTimelog';
+    let _sql = '';
+    if (value.currTab === 'code') {
+        _sql = 'SELECT * FROM runTimelog';
+    } else {
+        _sql = 'SELECT * FROM APILog';
+    }
     return connection(_sql, value);
 };
 
@@ -53,7 +58,12 @@ let addInfos = function(value) {
     }
     _par = _par.substr(0, _par.length - 1);
     _val = _val.substr(0, _val.length - 1);
-    let _sql = 'INSERT INTO runTimelog(' + _par + ') VALUES(' + _val + ')';
+    let _sql = '';
+    if (value.errType === '接口错误') {
+        _sql = 'INSERT INTO APILog(' + _par + ') VALUES(' + _val + ')';
+    } else {
+        _sql = 'INSERT INTO runTimelog(' + _par + ') VALUES(' + _val + ')';
+    }
     return connection(_sql, _array);
 };
 

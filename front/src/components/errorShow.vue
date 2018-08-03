@@ -4,10 +4,11 @@
     }
     .all {
         display: flex;
-
+        .red {
+            color: #f00;
+        }
         .left {
-            width: 350px;
-            min-width: 350px;
+            width: 20%;
             max-height: 100vh;
             overflow: auto;
             &::-webkit-scrollbar {
@@ -18,7 +19,23 @@
                 /*滚动条里面小方块*/
                 border-radius: 20px;
                 background: #00a680;
-                // background: #00a680;
+            }
+            .errTab {
+                display: flex;
+                margin-bottom: 10px;
+                div {
+                    flex: 1;
+                    height: 45px;
+                    line-height: 45px;
+                    text-align: center;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: #f8f8f8;
+                    }
+                }
+                .tabChoose {
+                    border-bottom: 5px solid #00a680;
+                }
             }
             li {
                 display: flex;
@@ -31,17 +48,18 @@
                     background-color: #f8f8f8;
                 }
                 .liLeft {
-                    width: 80%;
+                    display: flex;
+                    width: 75%;
                     font-size: 14px;
-                    div {
+                    .errType {
+                        color: #333;
+                    }
+                    .message {
+                        flex: 1;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
                         color: #6c6c72;
-                        &:first-child {
-                            margin-bottom: 10px;
-                            color: #333;
-                        }
                     }
                 }
                 .liRight {
@@ -66,15 +84,20 @@
             }
             ul {
                 li {
-                    height: 40px;
-                    line-height: 40px;
+                    display: flex;
+                    align-items: center;
+                    padding: 10px 0;
                     border-bottom: 1px solid #f2f3f3;
+                    color: #4a4a4a;
                     span {
-                        color: #4a4a4a;
                         &:first-child {
-                            display: inline-block;
-                            width: 110px;
+                            width: 100px;
                             color: #9d9da1;
+                        }
+                        &:last-child {
+                            flex: 1;
+                            word-wrap: break-word;
+                            word-break: break-all;
                         }
                     }
                 }
@@ -82,7 +105,8 @@
         }
         .center {
             position: relative;
-            flex: 1;
+            padding-bottom: 30px;
+            width: 65%;
             &::after,
             &::before {
                 content: '';
@@ -90,24 +114,37 @@
                 top: 0;
                 left: 0;
                 width: 1px;
-                height: 100vh;
+                height: 100%;
+                min-height: 100vh;
                 background-color: #f2f3f3;
             }
             &::after {
                 left: 100%;
             }
             pre {
+                width: 100%;
                 padding: 15px;
-                // font-family: inherit;
                 font-size: 16px;
                 color: #f00;
                 border: 1px solid #f2f3f3;
                 white-space: pre-wrap;
+                box-sizing: border-box;
             }
         }
         .right {
-            width: 290px;
-            min-width: 290px;
+            width: 15%;
+        }
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #00a680;
+            background-color: rgba(255, 255, 255, 0.8);
         }
     }
 </style>
@@ -115,14 +152,17 @@
 <template>
     <div class="all" v-if="errorList.length">
         <ul class="left">
+            <div class="errTab">
+                <div :class="{tabChoose:currTab==='code'}" @click="tabClick('code')">代码错误</div>
+                <div :class="{tabChoose:currTab==='api'}" @click="tabClick('api')">接口错误</div>
+            </div>
             <li v-for="err in errorList" :key="err.logId" :class="{currLi:err.logId===currErr.logId}" @click="clickError(err)">
                 <div class="liLeft">
-                    <div v-if="err.message">{{err.message.split(': ')[0]}}</div>
-                    <div v-if="err.message" class="msg" :title="err.message.split(': ')[1]">{{err.message.split(': ')[1]}}</div>
+                    <div v-if="err.statusCode" class="errType">{{err.statusCode}}：</div>
+                    <div class="message">{{err.message}}</div>
                 </div>
                 <div class="liRight">
-                    <!-- <div>{{err.time}}</div> -->
-                    <div>14:43</div>
+                    <div>{{formatDate(currErr.createDate,'MM-DD HH:mm')}}</div>
                 </div>
             </li>
         </ul>
@@ -131,7 +171,7 @@
             <ul>
                 <li>
                     <span>时间</span>
-                    <span>{{currErr.createDate|_formatDate}}</span>
+                    <span>{{formatDate(currErr.createDate)}}</span>
                 </li>
                 <li>
                     <span>项目</span>
@@ -143,7 +183,7 @@
                 </li>
                 <li>
                     <span>错误类型</span>
-                    <span>{{currErr.errType||'-'}}</span>
+                    <span class="red">{{currErr.errType}}</span>
                 </li>
             </ul>
             <div v-if="currErr.stack">
@@ -151,22 +191,40 @@
                 <pre>{{currErr.stack}}</pre>
             </div>
             <h4>错误信息</h4>
-            <ul>
+            <ul v-if="currTab==='code'">
                 <li>
                     <span>文件</span>
                     <span>{{currErr.filename||'-'}}</span>
                 </li>
                 <li>
                     <span>信息</span>
-                    <span>{{currErr.message}}</span>
+                    <span class="red">{{currErr.message}}</span>
+                </li>
+            </ul>
+            <ul v-else>
+                <li>
+                    <span>接口地址</span>
+                    <span class="red">{{currErr.APIURL}}</span>
+                </li>
+                <li>
+                    <span>状态码</span>
+                    <span class="red">{{currErr.statusCode}}</span>
+                </li>
+                <li>
+                    <span>参数</span>
+                    <span class="red">{{currErr.data}}</span>
+                </li>
+                <li>
+                    <span>错误信息</span>
+                    <span class="red">{{currErr.message}}</span>
                 </li>
                 <li>
                     <span>错误编码</span>
-                    <span>{{currErr.errCode||'-'}}</span>
+                    <span class="red">{{currErr.errCode}}</span>
                 </li>
             </ul>
             <h4>Cookies</h4>
-            <pre>{{currErr.cookies}}</pre>
+            <pre>{{currErr.cookies||'{}'}}</pre>
             <h4>LocalStorage</h4>
             <pre>{{currErr.localStorage}}</pre>
             <h4>SessionStorage</h4>
@@ -193,6 +251,7 @@
                 </li>
             </ul>
         </div>
+        <div class="loading" v-show="isLoad">加载数据...</div>
     </div>
 </template>
 
@@ -203,16 +262,59 @@
             return {
                 errorList: [],
                 currErr: {},
-                pageNo: 1
+                pageNo: 1,
+                currTab: 'api',
+                isLoad: false
             };
         },
-        filters: {
-            _formatDate(date) {
+        methods: {
+            tabClick(flag) {
+                this.currTab = flag;
+                this.getError();
+            },
+            getError() {
+                this.isLoad = false;
+                this.$http
+                    .post('/frontLogApi/getError', {
+                        pageNo: this.pageNo,
+                        currTab: this.currTab
+                    })
+                    .then(({data}) => {
+                        if (data.length) {
+                            this.errorList = data;
+                            this.currErr = data[0];
+                            this.currErr.cookies = JSON.parse(data[0].cookies);
+                            this.currErr.localStorage = JSON.parse(
+                                data[0].localStorage
+                            );
+                            this.currErr.sessionStorage = JSON.parse(
+                                data[0].sessionStorage
+                            );
+                            this.$nextTick(() => (this.isLoad = false));
+                        }
+                    });
+            },
+            clickError(err) {
+                this.currErr = err;
+                if (
+                    typeof err.localStorage !== 'object' &&
+                    err.localStorage !== '{}'
+                ) {
+                    this.currErr.localStorage = JSON.parse(err.localStorage);
+                }
+                if (
+                    typeof err.sessionStorage !== 'object' &&
+                    err.sessionStorage !== '{}'
+                ) {
+                    this.currErr.sessionStorage = JSON.parse(err.sessionStorage);
+                }
+            },
+            formatDate(date, _fmt) {
                 if (!date) {
                     return null;
                 }
                 date = new Date(date);
-                let fmt = 'YYYY-MM-DD 星期E HH:mm:ss';
+                let fmt = _fmt || 'YYYY-MM-DD 星期E HH:mm:ss';
                 if (fmt === undefined) {
                     return Number(date);
                 } else {
@@ -261,42 +363,6 @@
                         }
                     }
                     return fmt;
-                }
-            }
-        },
-        methods: {
-            getError() {
-                this.$http
-                    .post('/frontLogApi/getError', {
-                        pageNo: this.pageNo
-                    })
-                    .then(({data}) => {
-                        if (data.length) {
-                            this.errorList = data;
-                            this.currErr = data[0];
-                            this.currErr.cookies = JSON.parse(data[0].cookies);
-                            this.currErr.localStorage = JSON.parse(
-                                data[0].localStorage
-                            );
-                            this.currErr.sessionStorage = JSON.parse(
-                                data[0].sessionStorage
-                            );
-                        }
-                    });
-            },
-            clickError(err) {
-                this.currErr = err;
-                if (
-                    typeof err.localStorage !== 'object' &&
-                    err.localStorage !== '{}'
-                ) {
-                    this.currErr.localStorage = JSON.parse(err.localStorage);
-                }
-                if (
-                    typeof err.sessionStorage !== 'object' &&
-                    err.sessionStorage !== '{}'
-                ) {
-                    this.currErr.sessionStorage = JSON.parse(err.sessionStorage);
                 }
             }
         },

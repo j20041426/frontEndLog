@@ -45,15 +45,15 @@ let getList = function(value) {
 let addInfos = function(value) {
     let _array = [];
     let _par = '';
+    let _val = '';
     for (let item in value) {
         _array.push(value[item]);
         _par += item + ',';
+        _val += '?,';
     }
     _par = _par.substr(0, _par.length - 1);
-    let _sql =
-        'INSERT INTO runTimelog(' +
-        _par +
-        ') VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+    _val = _val.substr(0, _val.length - 1);
+    let _sql = 'INSERT INTO runTimelog(' + _par + ') VALUES(' + _val + ')';
     return connection(_sql, _array);
 };
 

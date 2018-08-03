@@ -141,6 +141,10 @@
                     <span>地址</span>
                     <span>{{currErr.projectUrl}}</span>
                 </li>
+                <li>
+                    <span>错误类型</span>
+                    <span>{{currErr.errType||'-'}}</span>
+                </li>
             </ul>
             <div v-if="currErr.stack">
                 <h4>堆栈信息</h4>
@@ -155,6 +159,10 @@
                 <li>
                     <span>信息</span>
                     <span>{{currErr.message}}</span>
+                </li>
+                <li>
+                    <span>错误编码</span>
+                    <span>{{currErr.errCode||'-'}}</span>
                 </li>
             </ul>
             <h4>Cookies</h4>
@@ -194,7 +202,8 @@
         data() {
             return {
                 errorList: [],
-                currErr: {}
+                currErr: {},
+                pageNo: 1
             };
         },
         filters: {
@@ -257,32 +266,38 @@
         },
         methods: {
             getError() {
-                this.$http.post('/frontLogApi/getError').then(({data}) => {
-                    if (data.length) {
-                        this.errorList = data;
-                        this.currErr = data[0];
-                        this.currErr.cookies = JSON.parse(data[0].cookies);
-                        this.currErr.localStorage = JSON.parse(
-                            data[0].localStorage
-                        );
-                        this.currErr.sessionStorage = JSON.parse(
-                            data[0].sessionStorage
-                        );
-                    }
-                });
+                this.$http
+                    .post('/frontLogApi/getError', {
+                        pageNo: this.pageNo
+                    })
+                    .then(({data}) => {
+                        if (data.length) {
+                            this.errorList = data;
+                            this.currErr = data[0];
+                            this.currErr.cookies = JSON.parse(data[0].cookies);
+                            this.currErr.localStorage = JSON.parse(
+                                data[0].localStorage
+                            );
+                            this.currErr.sessionStorage = JSON.parse(
+                                data[0].sessionStorage
+                            );
+                        }
+                    });
             },
             clickError(err) {
                 this.currErr = err;
                 if (
                     typeof err.localStorage !== 'object' &&
                     err.localStorage !== '{}'
-                )
+                ) {
                     this.currErr.localStorage = JSON.parse(err.localStorage);
+                }
                 if (
                     typeof err.sessionStorage !== 'object' &&
                     err.sessionStorage !== '{}'
-                )
+                ) {
                     this.currErr.sessionStorage = JSON.parse(err.sessionStorage);
+                }
             }
         },
         created() {

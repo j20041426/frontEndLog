@@ -1,10 +1,12 @@
-import Vue from 'vue';
 // 监听前端异常事件
 window.addEventListener('error', e => errorHandler(e), true);
 // 异常收集处理函数
 const errorHandler = (e, t) => {
+  console.log(e);
+  console.log(t);
   let basicInfo = {
-    // 概要信息
+    errType: e.errType || '代码错误',
+    errCode: '',
     createDate: '',
     projectName: document.title,
     projectUrl: window.location.href,
@@ -13,42 +15,74 @@ const errorHandler = (e, t) => {
     fileName: '',
     message: '',
     cookies: JSON.stringify(document.cookie),
-    localStorage: JSON.stringify(localStorage),
-    sessionStorage: JSON.stringify(sessionStorage),
+    localStorage: JSON.stringify(window.localStorage),
+    sessionStorage: JSON.stringify(window.sessionStorage),
     // 设备信息
     ..._AgentInfo._init()
   };
   basicInfo.createDate = formatDate(new Date(), 'YYYY-MM-DD HH:mm:ss');
-
+  // let _localStorage = JSON.parse(basicInfo.localStorage);
+  // if (_localStorage.clouds2_plat_plamenuInfo) {
+  //     delete _localStorage.clouds2_plat_plamenuInfo;
+  // }
+  // if (_localStorage.clouds2_plat_planId) {
+  //     delete _localStorage.clouds2_plat_planId;
+  // }
+  // basicInfo.localStorage = JSON.stringify(_localStorage);
   // 收集【接口请求错误】
-  if (e.errType === 'ajax') {
+  if (e.errType) {
+    basicInfo.message = '';
+    basicInfo.errCode = '';
   } else {
+    // 收集【非接口请求错误】
     if (t) {
+      //Vue 报错机制
       basicInfo.stack = e.stack;
       basicInfo.message = e.message;
     } else {
-      // 收集【非接口请求错误】
+      // Window 报错机制
       if (e.target.localName) {
-        // img[src]：图片请求链接错误监控
         if (e.target.localName === 'img') {
+          // img[src]：图片请求链接错误监控
           basicInfo.message = 'Image Not Found: ' + e.target.src;
+          basicInfo.errType = '资源引入错误';
         }
       } else {
         // 收集【运行时js错误】
         let {message, filename, error} = e;
-        basicInfo.stack = error.stack;
+        if (error) basicInfo.stack = error.stack;
         basicInfo.message = message;
         basicInfo.fileName = filename;
       }
     }
   }
   //打印收集到的错误数据
-  console.log(basicInfo);
 
-  // 发送请求
-  Vue.axios
-    .post('/frontLogApi/saveError', basicInfo)
-    .then(({data}) => console.log(data));
+  // 原生ajax发送请求 start
+  let XHR = null;
+  if (window.XMLHttpRequest) {
+    XHR = new XMLHttpRequest();
+  } else if (window.ActiveXObject) {
+    XHR = new ActiveXObject('Microsoft.XMLHTTP');
+  }
+//   XHR.open('post', 'http://t.finlean.top/frontLogApi/saveError', true);
+  XHR.open('post', 'http://192.168.10.93:8999/frontLogApi/saveError', true);
+  XHR.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  let parmas = '';
+  for (let key in basicInfo) {
+    parmas += key + '=' + basicInfo[key] + '&';
+  }
+  XHR.send(parmas);
+  XHR.onreadystatechange = () => {
+    if (XHR.readyState == 4) {
+      try {
+        console.log(XHR.responseText);
+      } catch (e) {
+        console.log('你访问的页面出错了');
+      }
+    }
+  };
+  // 原生ajax发送请求 end
 };
 
 /*
@@ -197,7 +231,7 @@ const _AgentInfo = {
   }
 };
 
-function formatDate(date, fmt) {
+const formatDate = (date, fmt) => {
   if (!date) {
     return null;
   }
@@ -257,7 +291,7 @@ function formatDate(date, fmt) {
     }
     return fmt;
   }
-}
+};
 
 // 将【异常处理函数】注册为vue插件，之后可以通过 vue.errorHandler(params)或this.errorHandler(params)主动调用
 const install = Vue => {

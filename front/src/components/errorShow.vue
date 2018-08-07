@@ -159,10 +159,10 @@
             <li v-for="err in errorList" :key="err.logId" :class="{currLi:err.logId===currErr.logId}" @click="clickError(err)">
                 <div class="liLeft">
                     <div v-if="err.statusCode" class="errType">{{err.statusCode}}：</div>
-                    <div class="message">{{err.message}}</div>
+                    <div class="message" :title="err.message">{{err.message}}</div>
                 </div>
                 <div class="liRight">
-                    <div>{{formatDate(currErr.createDate,'MM-DD HH:mm')}}</div>
+                    <div>{{formatDate(err.createDate,'MM-DD HH:mm')}}</div>
                 </div>
             </li>
         </ul>
@@ -263,7 +263,7 @@
                 errorList: [],
                 currErr: {},
                 pageNo: 1,
-                currTab: 'api',
+                currTab: 'code',
                 isLoad: false
             };
         },

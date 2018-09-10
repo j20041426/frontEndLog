@@ -10,7 +10,13 @@ app.use(bodyParser.json());
 // 解析应用程序/ X-WWW格式URL编码
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static('./dist'));
-
+// 跨域
+// app.all('*', function(req, res, next) {
+//     res.header('Access-Control-Allow-Origin', '*');
+//     res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+//     res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS');
+//     next();
+// });
 // 获取错误日志
 app.post('/frontLogApi/getError', (req, res) => {
     db.getList(req.body)

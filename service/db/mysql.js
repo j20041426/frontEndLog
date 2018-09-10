@@ -35,9 +35,9 @@ let connection = function(sql, values) {
 let getList = function(value) {
     let _sql = '';
     if (value.currTab === 'code') {
-        _sql = 'SELECT * FROM runTimelog';
+        _sql = 'SELECT * FROM runTimelog order by createDate desc';
     } else {
-        _sql = 'SELECT * FROM APILog';
+        _sql = 'SELECT * FROM APILog order by createDate desc';
     }
     return connection(_sql, value);
 };
